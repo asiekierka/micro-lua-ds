@@ -195,7 +195,8 @@ CXXFLAGS	+= -std=gnu++17 $(WARNFLAGS) $(INCLUDEFLAGS) $(DEFINES) \
 		   -specs=$(SPECS)
 
 LDFLAGS		:= $(ARCH) $(LIBDIRSFLAGS) -Wl,-Map,$(MAP) $(DEFINES) \
-		   -Wl,--start-group $(LIBS) -Wl,--end-group -specs=$(SPECS)
+		   -Wl,--start-group $(LIBS) -Wl,--end-group -specs=$(SPECS) \
+		   -Wl,--defsym,__dtcm_data_size=8
 
 ifeq ($(LTO),true)
 CFLAGS		+= -flto
