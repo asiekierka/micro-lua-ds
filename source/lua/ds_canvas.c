@@ -106,8 +106,7 @@ static int canvas_newText(lua_State *L){
     co->type = CANVAS_TYPE_TEXT;
     co->x1 = x1;
     co->y1 = y1;
-    co->text = malloc(strlen(text)+1);
-    strcpy(co->text,text);
+    co->text = strdup(text);
     co->color = color;
     lua_pushlightuserdata(L, co);
     return 1;
@@ -134,8 +133,7 @@ static int canvas_newTextBox(lua_State *L){
     co->y1 = y1;
     co->x2 = x2;
     co->y2 = y2;
-    co->text = malloc(strlen(text)+1);
-    strcpy(co->text,text);
+    co->text = strdup(text);
     co->color = color;
     lua_pushlightuserdata(L, co);
     return 1;
@@ -158,8 +156,7 @@ static int canvas_newTextFont(lua_State *L){
     co->type = CANVAS_TYPE_TEXTFONT;
     co->x1 = x1;
     co->y1 = y1;
-    co->text = malloc(strlen(text)+1);
-    strcpy(co->text,text);
+    co->text = strdup(text);
     co->color = color;
     co->font = font;
     lua_pushlightuserdata(L, co);
@@ -306,8 +303,7 @@ static int canvas_setAttr(lua_State *L){
         case ATTR_TEXT:
             strcpy(text,(char *)luaL_checkstring(L, 3));
             free(co->text);
-            co->text = malloc(strlen(text)+1);
-    		strcpy(co->text,text);
+            co->text = strdup(text);
             break;
         case ATTR_VISIBLE:
             co->visible = (bool)lua_toboolean(L, 3);

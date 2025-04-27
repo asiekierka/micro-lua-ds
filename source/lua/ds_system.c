@@ -91,25 +91,24 @@ static int system_makeDirectory(lua_State *L){
 int mustSwap(lua_State *L, int dirList, int i) {
     // Special function to sort the final table placing folders first
     int isDir1, isDir2, nameCmp;
-    char *name1 = malloc(256*sizeof(char)), *name2 = malloc(256*sizeof(char));
+    char name1[256], name2[256];
     
     lua_geti(L, dirList, i);
     lua_getfield(L, -1, "isDir");
     isDir1 = lua_toboolean(L, -1);
     lua_getfield(L, -2, "name");
-    strcpy(name1, lua_tostring(L, -1));
+    strncpy(name1, lua_tostring(L, -1), sizeof(name1));
     lua_pop(L, 3);                      // Removes elem[i], its 'isDir' and its 'name'
     lua_geti(L, dirList, i+1);
     lua_getfield(L, -1, "isDir");
     isDir2 = lua_toboolean(L, -1);
     lua_getfield(L, -2, "name");
-    strcpy(name2, lua_tostring(L, -1));
+    strncpy(name2, lua_tostring(L, -1), sizeof(name2));
     lua_pop(L, 3);                      // Idem
-    
+
+    name1[sizeof(name1) - 1] = 0;
+    name2[sizeof(name2) - 1] = 0;
     nameCmp = strcmp(strlwr(name1), strlwr(name2));
-    
-    free(name1);
-    free(name2);
     
     return (!isDir1 && isDir2) || ((nameCmp > 0) && (isDir1 == isDir2));
 }

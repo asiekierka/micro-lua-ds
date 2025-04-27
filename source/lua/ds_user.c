@@ -26,42 +26,23 @@ static int user_birthDay(lua_State* l) {
 }
 
 static int user_name(lua_State* l) {
-    // The name is given as UTF-16 (type 's16'); '+1' for '\0'
-    char *name = malloc(PersonalData->nameLen * sizeof(s16) + 1);
-    int i;
-    
-    for (i = 0; i < PersonalData->nameLen; i++)
-        name[i] = PersonalData->name[i];
-    
-    name[i] = '\0';
-    
+    char name[10 * 4 + 1];
+    int ret = utf16_to_utf8(name, sizeof(name), PersonalData->name, PersonalData->nameLen * 2);
+    if (ret <= 0) name[0] = '\0';
     lua_pushstring(l, name);
-    
-    free(name);
-    
     return 1;
 }
 
 static int user_nameLength(lua_State* l) {
     lua_pushnumber(l, PersonalData->nameLen);
-    
     return 1;
 }
 
 static int user_message(lua_State* l) {
-    // The message is given as UTF-16 (type 's16'); '+1' for '\0'
-    char *msg = malloc(PersonalData->messageLen * sizeof(s16) + 1);
-    int i;
-    
-    for (i = 0; i < PersonalData->messageLen; i++)
-        msg[i] = PersonalData->message[i];
-    
-    msg[i] = '\0';
-    
+    char msg[10 * 4 + 1];
+    int ret = utf16_to_utf8(msg, sizeof(msg), PersonalData->message, PersonalData->messageLen * 2);
+    if (ret <= 0) msg[0] = '\0';
     lua_pushstring(l, msg);
-    
-    free(msg);
-    
     return 1;
 }
 

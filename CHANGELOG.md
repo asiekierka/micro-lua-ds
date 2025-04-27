@@ -6,6 +6,8 @@
 
 * Updated to BlocksDS 1.10.1.
 * Migrated from the EFS library to the more standard NitroFS.
+* Minor performance improvements.
+* Reading the user's name and message now returns proper UTF-8.
 
 ### Bug fixes
 

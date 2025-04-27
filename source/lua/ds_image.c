@@ -28,10 +28,15 @@ static int image_load(lua_State *L){
     struct stat file_status;
     if(stat(filename, &file_status) != 0){
         luaL_error(L, "Unable to load %s", filename);
+        return 0;
     }
     filesize = file_status.st_size;
     FILE * f = fopen(filename, "r");
     char * buffer = (char *)malloc(sizeof(char)*filesize);
+    if(buffer == NULL) {
+        luaL_error(L, "Unable to load %s (out of memory)", filename);
+        return 0;
+    }
     fread(buffer, 1, filesize, f);
     fclose(f);
     UL_IMAGE * img;
