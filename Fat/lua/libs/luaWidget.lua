@@ -546,7 +546,7 @@ luaWidget.show = function(widget)
 				screen.drawRect(scr, obj.x-add, obj.y-add, obj.x+obj.width-add, obj.y+obj.height-add, obj.cCadre)
 				screen.drawRect(scr, obj.x-1, obj.y-1, obj.x+obj.width, obj.y+obj.height, ombre)
 				local buff = string.gsub(obj.text,"%%B",bout)
-				buff = string.sub(buff,1,(obj.width-6)/6)
+				buff = string.sub(buff,1,math.floor((obj.width-6)/6))
 				if (obj.align == _ACENTER) then
 					xx = math.floor(obj.width/2)-(string.len(buff)*3)+obj.x
 					if(obj.image ~= 0) then 
@@ -743,7 +743,7 @@ luaWidget.show = function(widget)
 				buff = string.gsub(obj.text, "%%P", pourcent)
 				buff = string.gsub(buff, "%%p", obj.pos)
 				buff = string.gsub(buff, "%%m", obj.max)
-				buff = string.sub(buff,0,(obj.width-4)/6)
+				buff = string.sub(buff,0,math.floor((obj.width-4)/6))
 				xx = (obj.width/2) - (string.len(buff)*3) + obj.x
 				yy = (obj.height/2) - 3 + obj.y
 				screen.print(scr,xx,yy,buff,obj.cText)
@@ -755,7 +755,7 @@ luaWidget.show = function(widget)
 				local yy2 = obj.y+obj.height
 				local adx = 0
 				local i, texte, posSel, ldep, lfin
-				local nbelem = table.maxn(obj.element)
+				local nbelem = #obj.element
 				local nbliaff = math.floor((obj.height - 2)/10)
 				screen.drawFillRect(scr, xx1, yy1, xx2, yy2, obj.cFond)
 				screen.drawRect(scr, xx1, yy1, xx2, yy2, obj.cCadre)
@@ -768,7 +768,7 @@ luaWidget.show = function(widget)
 				if ldep <1 then ldep = 1 end
 				if(obj.image ~= 0) then adx = 14 else adx = 2 end
 				for i=ldep, lfin do
-					texte = string.sub(obj.element[i].text,0,(xx2-xx1-13-adx)/6)
+					texte = string.sub(obj.element[i].text,0,math.floor((xx2-xx1-13-adx)/6))
 					if i == posSel then
 						screen.drawFillRect(scr,xx1+1,yy1+1+((i-ldep)*10),xx2-10,yy1+11+((i-ldep)*10),obj.cSel)
 						screen.print(scr,xx1+adx,yy1+2+((i-ldep)*10),texte,obj.cTextSel)
@@ -896,7 +896,7 @@ luaWidget.show = function(widget)
 				screen.drawFillRect(scr, xx, yy, xx+obj.width, yy+12, obj.cFond)
 				screen.drawRect(scr, xx, yy, xx+obj.width, yy+12, obj.cCadre)
 				screen.drawLine(scr, xx+obj.width-12, yy, xx+obj.width-12, yy+12, obj.cCadre)
-				buff = string.sub(buff,1,(obj.width-18)/6)
+				buff = string.sub(buff,1,math.floor((obj.width-18)/6))
 				screen.print(scr,xx+2,yy+2,buff,obj.cText)
 				xx = xx+obj.width-12
 				screen.drawLine(scr, xx+2, yy+6, xx+10, yy+6, obj.cCadre)

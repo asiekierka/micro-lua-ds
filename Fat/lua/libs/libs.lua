@@ -77,7 +77,7 @@ Debug.print = function(text,aff)
 	if(text == nil) then text = "<nil>"
 	elseif(text == true) then text = "TRUE"
 	elseif(text == false) then text = "FALSE"
-	elseif(type(text) == "table") then text = "<"..tostring(text).."["..table.maxn(text).."]>"
+	elseif(type(text) == "table") then text = "<"..tostring(text).."["..#text.."]>"
 	elseif(type(text) == "userdata") then text = "<"..tostring(text)..">"
 	elseif(type(text) == "function") then text = "<"..tostring(text)..">"
 	elseif(type(text) == "thread") then text = "<"..tostring(text)..">"

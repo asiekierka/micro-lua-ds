@@ -79,7 +79,11 @@ unloadLib = function(list)
 	local i,j
 	for i=#list,1,-1 do
 		j = list[i]
-		assert(loadstring(j..".del()"))()
+		if loadstring == nil then
+			assert(load(j..".del()"))()
+		else
+			assert(loadstring(j..".del()"))()
+		end
 		package.loaded[j] = nil		
 	end
 end

@@ -4,6 +4,7 @@
 
 ### New features
 
+* Added Lua 5.3 build, using Lua 5.3.6.
 * Enhanced peripheral support:
   * Additional rumble devices are now supported.
   * The Motion Card now works properly on DSi/3DS console.s

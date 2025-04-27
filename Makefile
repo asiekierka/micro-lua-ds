@@ -17,9 +17,10 @@ NITROFS		?= true
 
 NAME		:= MicroLua
 VERSION		:= 4.7.3
+LUAVER		?= 52
 
 GAME_TITLE	:= Micro Lua DS $(VERSION)
-GAME_SUBTITLE	:= Unofficial update
+GAME_SUBTITLE	:= Lua$(LUAVER) :: Unofficial update
 GAME_AUTHOR	:= Originally by Risike
 GAME_ICON	:= logo.png
 GAME_ICON_ANIMATED := logo.gif
@@ -35,7 +36,7 @@ SDIMAGE		:= image.bin
 # Source code paths
 # -----------------
 
-LUADIR		:= lua
+LUADIR		:= vendor/lua$(LUAVER)
 SOURCEDIRS	:= source
 INCLUDEDIRS	:= $(LUADIR)
 GFXDIRS		:= graphics
@@ -51,7 +52,11 @@ endif
 # Defines passed to all files
 # ---------------------------
 
+ifeq ($(LUAVER),52)
 DEFINES		:= -DLUA_COMPAT_ALL
+else
+DEFINES		:= -DLUA_COMPAT_5_1 -DLUA_COMPAT_5_2 -DLUA_COMPAT_5_3
+endif
 
 # Libraries
 # ---------
@@ -67,12 +72,17 @@ LIBDIRS		:= $(BLOCKSDSEXT)/ulibrary \
 # Build artifacts
 # ---------------
 
-BUILDDIR	:= build/$(NAME)
+BUILDNAME	:= $(NAME)-lua$(LUAVER)
+ifeq ($(DEBUG),true)
+BUILDNAME	+= -debug
+endif
+
+BUILDDIR	:= build/$(BUILDNAME)
 LTODIR		:= $(BUILDDIR)/lto
-ELF		:= build/$(NAME).elf
-DUMP		:= build/$(NAME).dump
-MAP		:= build/$(NAME).map
-ROM		:= $(NAME)-$(VERSION).nds
+ELF		:= build/$(BUILDNAME).elf
+DUMP		:= build/$(BUILDNAME).dump
+MAP		:= build/$(BUILDNAME).map
+ROM		:= $(NAME)-$(VERSION)-lua$(LUAVER).nds
 
 # If NITROFSDIR is set, the soundbank created by mmutil will be saved to NitroFS
 SOUNDBANKINFODIR	:= $(BUILDDIR)/maxmod
@@ -128,14 +138,27 @@ SOURCES_CPP	:= $(shell find -L $(SOURCEDIRS) -name "*.cpp")
 # ---------
 
 # From Lua src/Makefile
+ifeq ($(LUAVER),52)
 CORE_O=	lapi.o lcode.o lctype.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o \
 	lmem.o lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o \
 	ltm.o lundump.o lvm.itcm.arm.o lzio.o
+AUX_O=
 LIB_O=	lauxlib.o lbaselib.o lbitlib.o lcorolib.o ldblib.o liolib.o \
 	lmathlib.o loslib.o lstrlib.o ltablib.o loadlib.o linit.o
+endif
+
+ifeq ($(LUAVER),53)
+CORE_O=	lapi.o lcode.o lctype.o ldebug.o ldo.o ldump.o lfunc.o lgc.o llex.o \
+	lmem.o lobject.o lopcodes.o lparser.o lstate.o lstring.o ltable.o \
+	ltm.o lundump.o lvm.itcm.arm.o lzio.o ltests.o
+AUX_O=	lauxlib.o
+LIB_O=	lbaselib.o ldblib.o liolib.o lmathlib.o loslib.o ltablib.o lstrlib.o \
+	lutf8lib.o lbitlib.o loadlib.o lcorolib.o linit.o
+endif
 
 OBJS_LUA	:= \
 		$(patsubst %.o,%.c.o,$(addprefix $(BUILDDIR)/$(LUADIR)/,$(LIB_O))) \
+		$(patsubst %.o,%.c.o,$(addprefix $(BUILDDIR)/$(LUADIR)/,$(AUX_O))) \
 		$(patsubst %.o,%.c.o,$(addprefix $(BUILDDIR)/$(LUADIR)/,$(CORE_O)))
 
 # Compiler and linker flags

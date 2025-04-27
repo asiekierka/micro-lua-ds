@@ -20,7 +20,7 @@ This package contains the following files and directories:
 The source repository additionally contains the following folders:
 
 * `Fat` - default NitroFS file system bundled with the `.nds` file,
-* `lua` - Lua source code.
+* `vendor/lua*` - Lua source code.
 
 ## Installation
 

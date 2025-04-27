@@ -21,8 +21,11 @@ jobs:
         run: |
           wf-pacman -S --noconfirm blocksds-ulibrary toolchain-gcc-arm-none-eabi-zlib toolchain-gcc-arm-none-eabi-libpng16
 
-      - name: Build
-        run: make
+      - name: Build (Lua 5.2)
+        run: make LUAVER=52
+
+      - name: Build (Lua 5.3)
+        run: make LUAVER=53
 
       - name: Archive artifacts
         uses: actions/upload-artifact@v4
