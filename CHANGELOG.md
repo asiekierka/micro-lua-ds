@@ -2,6 +2,13 @@
 
 ## MicroLua 4.7.3
 
+### New features
+
+* Enhanced peripheral support:
+  * Additional rumble devices are now supported.
+  * The Motion Card now works properly on DSi/3DS console.s
+  * The licensed Motion Pack is now supported.
+
 ### Improvements
 
 * Updated to BlocksDS 1.10.1.

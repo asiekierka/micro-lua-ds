@@ -78,7 +78,9 @@ int main()
         print_error("Failed to initialize FAT library");
         return 1;
     }
-    
+
+    peripheralSlot2InitDefault();
+
     timerStart(TIMER_ID, ClockDivider_1024, 0, NULL);
     
     struct lua_State *l = luaL_newstate();

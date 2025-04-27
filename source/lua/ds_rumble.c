@@ -22,7 +22,7 @@ static int rumble_isInserted(lua_State *L){
 }
 
 static int rumble_set(lua_State *L){
-    setRumble(lua_toboolean(L, 1));
+    setRumble(lua_toboolean(L, 1) ? rumbleGetMaxRawStrength() : 0);
     return 0;
 }
 
