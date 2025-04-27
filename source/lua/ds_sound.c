@@ -32,7 +32,9 @@ static int sound_loadBank(lua_State *L){
 }
 
 static int sound_unloadBank(lua_State *L){
-    mmInitDefaultMem((mm_addr)0);
+    // FIXME: proper mmUnload()
+    mmEffectCancelAll();
+    mmStop();
     return 0;
 }
 
