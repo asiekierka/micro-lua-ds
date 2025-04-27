@@ -32,7 +32,7 @@ end
 
 shell.loadLibs = function()
 	if(Explore == nil) then
-		screen.print(SCREEN_UP,177,182,"Chargement...")
+		screen.print(SCREEN_UP,195,182,"Loading...")
 		render()
 		dofile("/lua/libs/standard.lua")
 		libs = loadLib({"luaWidget","popUp","libClavier","Explore"})
@@ -50,7 +50,7 @@ shell.unloadLibs = function()
 	Image.destroy(shell.icones)
 	Image.destroy(shell.logo)
 	collectgarbage("collect")
-	screen.print(SCREEN_UP,177,182,"Chargement...")
+	screen.print(SCREEN_UP,195,182,"Loading...")
 	render()
 end
 
