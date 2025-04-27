@@ -198,96 +198,6 @@ static const char *checkoption (lua_State *L, const char *conv, char *buff) {
   return conv;  /* to avoid warnings */
 }
 
-/* These two functions are workarounds to fix time() on 3DS,
-which return value seems to not update (some bug from the libnds).
-They are slightly modified copies from Lua's loslib.c. */
-static int os_date3DS(lua_State *L) {
-    const char *s = luaL_optstring(L, 1, "%c");
-    // We need to update the return value of time()
-    ticks += timerElapsed(TIMER_ID);
-    time_t t = luaL_opt(L, (time_t)luaL_checknumber, 2, time(NULL) + ticks / TIMER_CLOCK);
-    struct tm tmr, *stm;
-    
-    if (*s == '!') {  /* UTC? */
-        stm = l_gmtime(&t, &tmr);
-        s++;  /* skip `!' */
-    } else
-        stm = l_localtime(&t, &tmr);
-    
-    if (stm == NULL)  /* invalid date? */
-        lua_pushnil(L);
-    else if (strcmp(s, "*t") == 0) {
-        lua_createtable(L, 0, 9);  /* 9 = number of fields */
-        setfield(L, "sec", stm->tm_sec);
-        setfield(L, "min", stm->tm_min);
-        setfield(L, "hour", stm->tm_hour);
-        setfield(L, "day", stm->tm_mday);
-        setfield(L, "month", stm->tm_mon+1);
-        setfield(L, "year", stm->tm_year+1900);
-        setfield(L, "wday", stm->tm_wday+1);
-        setfield(L, "yday", stm->tm_yday+1);
-        setboolfield(L, "isdst", stm->tm_isdst);
-    } else {
-        char cc[4];
-        luaL_Buffer b;
-        cc[0] = '%';
-        luaL_buffinit(L, &b);
-        
-        while (*s) {
-            if (*s != '%')  /* no conversion specifier? */
-                luaL_addchar(&b, *s++);
-            else {
-                size_t reslen;
-                char buff[200];  /* should be big enough for any conversion result */
-                s = checkoption(L, s + 1, cc);
-                reslen = strftime(buff, sizeof(buff), cc, stm);
-                luaL_addlstring(&b, buff, reslen);
-            }
-        }
-        
-        luaL_pushresult(&b);
-    }
-    
-    return 1;
-}
-
-static int os_time3DS(lua_State *L) {
-    // This one entirely replaces os_time()
-    time_t t;
-    if (lua_isnoneornil(L, 1)) {
-        /* No table is given to translate to timestamp:
-        we need to use time() and thus the workaround */
-        t = time(NULL);
-    	ticks += timerElapsed(TIMER_ID);
-        t += ticks / TIMER_CLOCK;
-    } else {
-        struct tm ts;
-        luaL_checktype(L, 1, LUA_TTABLE);
-        lua_settop(L, 1);  /* make sure table is at the top */
-        ts.tm_sec = getfield(L, "sec", 0);
-        ts.tm_min = getfield(L, "min", 0);
-        ts.tm_hour = getfield(L, "hour", 12);
-        ts.tm_mday = getfield(L, "day", -1);
-        ts.tm_mon = getfield(L, "month", -1) - 1;
-        ts.tm_year = getfield(L, "year", -1) - 1900;
-        ts.tm_isdst = getboolfield(L, "isdst");
-        t = mktime(&ts);
-    }
-    if (t == (time_t)(-1))
-        lua_pushnil(L);
-    else
-        lua_pushnumber(L, (lua_Number)t);
-    return 1;
-}
-
-// Workaround functions to be placed into the os table
-static const luaL_Reg oslib3DS[] = {
-    {"date3DS", os_date3DS},
-    {"time3DS", os_time3DS},
-    {NULL, NULL}
-};
-
-
 // Functions associated with the table Timer
 static const luaL_Reg timerlib[] = {
     {"new", timer_new},
@@ -307,9 +217,13 @@ static const luaL_Reg timerlib_methods[] = {
 ** Open infos library
 */
 LUALIB_API int luaopen_timer(lua_State *L) {
-    // Add the workaround functions to the os table
+    // Add shims for time3DS/date3DS (MicroLua 4.7.2 compatibility)
     lua_getglobal(L, LUA_OSLIBNAME);
-    luaL_setfuncs(L, oslib3DS, 0);
+    lua_getfield(L, -2, "time");
+    lua_setfield(L, -2, "time3DS");
+    lua_getfield(L, -2, "date");
+    lua_setfield(L, -2, "date3DS");
+    lua_pop(L, 1);
 
     // Create the metatable for the instances of Timer
     luaL_newmetatable(L, TIMER_META);

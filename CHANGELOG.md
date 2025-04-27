@@ -7,6 +7,10 @@
 * Updated to BlocksDS 1.10.1.
 * Migrated from the EFS library to the more standard NitroFS.
 
+### Bug fixes
+
+* As BlocksDS worked around the 3DS RTC emulation issue upstream, `os.time3DS` and `os.date3DS` are no longer necessary. They have been preserved as aliases to `os.time` and `os.date` for compatibility purposes.
+
 ## MicroLua 4.7.2
 
 ### Bug fixes

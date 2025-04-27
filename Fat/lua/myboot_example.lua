@@ -20,15 +20,6 @@ http://sourceforge.net/p/microlua/
 ]]
 
 
---[[ If you are running MicroLua on a 3DS, you are victim of a libnds's bug that prevent
-    time of being updated. If this is the case, activate "myboot.lua" as explained above
-    so the following lines are used; they replace Lua's built-in functions by corrected
-    versions. More information can be found on https://sourceforge.net/p/microlua/wiki/3DSTimeWorkaround/
-    You will probably have to comment the other ones for they are not useful and may
-    lead to unexpected behaviours. ]]
-os.time = os.time3DS
-os.date = os.date3DS
-
 --[[ You may wish to change the directory open by default, that is to say the "scripts" directory.
     The same manipulation can be used to change other constants.
     The complete list of these constants can be found here:
