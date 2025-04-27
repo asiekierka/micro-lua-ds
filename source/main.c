@@ -26,13 +26,13 @@
 
 #include <ulib/ulib.h>
 #include <fat.h>
+#include <filesystem.h>
 #include <unistd.h>
 
 #include <dswifi9.h>
 #include <netinet/in.h>
 
 #include "constants.h"
-#include "efs_lib.h"
 
 
 void print_error(const char *text)
@@ -65,19 +65,14 @@ int main()
     // Use bright pink as a transparent color
     ulSetTransparentColor(RGB15(31, 0, 31));
     
-    /*  Initialization of libfat and EFSLib
+    /*  Initialization of libfat and NitroFS
     *   According to the macro EFS defined upon compilation,
     *   MicroLua will init FAT alone, or EFS and FAT */
-    if (!EFS) {
-        if (!fatInitDefault()) {
-            print_error("Failed to initialize FAT library");
-            return 1;
-        }
-    } else {
-        if (!EFS_Init(EFS_AND_FAT, NULL)) {
-            print_error("Failed to initialize EFS library");
-            return 1;
-        }
+    bool fatInitOk = fatInitDefault();
+    bool nitrofsInitOk = nitroFSInit(NULL);
+    if (!fatInitOk && !nitrofsInitOk) {
+        print_error("Failed to initialize FAT library");
+        return 1;
     }
     
     timerStart(TIMER_ID, ClockDivider_1024, 0, NULL);
@@ -95,16 +90,16 @@ int main()
     chdir("fat:/");
     if (luaL_loadfile(l, ULUA_BOOT_FULLPATH)) {
         if (luaL_loadfile(l, ULUA_LIBS"libs.lua")) {
-            if (luaL_loadfile(l, "efs:"ULUA_BOOT_FULLPATH)) {     // Then from EFS
-                if (luaL_loadfile(l, "efs:/"ULUA_LIBS"libs.lua")) {
+            if (luaL_loadfile(l, "nitro:"ULUA_BOOT_FULLPATH)) {     // Then from NitroFS
+                if (luaL_loadfile(l, "nitro:/"ULUA_LIBS"libs.lua")) {
                     char text[256];
-                    sprintf(text,"Error Occured: Couldn't open (efs:/)%s\n", ULUA_BOOT_FULLPATH);
+                    sprintf(text,"Error Occured: Couldn't open (nitro:/)%s\n", ULUA_BOOT_FULLPATH);
                     print_error(text);
                     return 1;
                 }
             }
-            // Here we only have EFS, so we set it as default device
-            chdir(EFS_DEVICE);
+            // Here we only have NitroFS, so we set it as default device
+            chdir("nitro:/");
         }
     }
     

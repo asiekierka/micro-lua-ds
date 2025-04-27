@@ -1,0 +1,215 @@
+/*
+*
+*/
+
+#include <stdlib.h>
+#include <stdio.h>
+
+#define ds_mod_c
+#define LUA_LIB
+
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
+
+#include <ulib/ulib.h>
+#include <mikmod9.h>
+#include <sys/stat.h>
+#include <sys/dir.h>
+
+#include "vars.h"
+
+// called by the drivers in mikmod library
+void MikMod9_SendCommand(u32 command){
+	while (REG_IPC_FIFO_CR & IPC_FIFO_SEND_FULL);
+	REG_IPC_FIFO_TX = command;
+}
+
+void TimerInterrupt(){
+	// player tick
+	MikMod_Update();	
+	// the bpm can change in the middle of the song
+	TIMER0_DATA = TIMER_FREQ_256(md_bpm * 50 / 125);
+}
+
+static int mod_init(lua_State *L){
+
+	//Init Mikmod
+	REG_IPC_FIFO_CR = IPC_FIFO_ENABLE | IPC_FIFO_SEND_CLEAR;
+	MikMod_RegisterDriver(&drv_nds_hw);
+	MikMod_RegisterAllLoaders();
+	if (MikMod_Init("")) {
+		ulDebug("Could not init mikmod:\n%s\n",
+			MikMod_strerror(MikMod_errno));
+		return 0;
+	}
+	// call update with correct timing
+	TIMER0_CR = 0;
+	irqSet(IRQ_TIMER0, TimerInterrupt);
+	irqEnable(IRQ_TIMER0);
+	TIMER0_DATA = TIMER_FREQ_256(md_bpm * 50 / 125);
+	TIMER0_CR = TIMER_DIV_256 | TIMER_IRQ_REQ | TIMER_ENABLE;
+	return 0;
+}
+
+static int mod_load(lua_State *L){	
+	char * filename = (char *)luaL_checkstring(L, 1);
+	assert(L, filename != NULL, "Path can't be null");
+	int filesize;
+	struct stat file_status;
+	if(stat(filename, &file_status) != 0){
+		luaL_error(L, "Unable to load %s", filename);
+	}
+	filesize = file_status.st_size;
+	FILE * f = fopen(filename, "r");
+	char * buffer= (char *)malloc(sizeof(char)*filesize);
+	fread(buffer, 1, filesize, f);
+	fclose(f);
+	MODULE * module = Player_LoadMemory((const char *)buffer, (int)filesize, 64, 0);
+	lua_pushlightuserdata(L, module);
+	return 1;
+}
+
+static int mod_destroy(lua_State *L){	
+	MODULE * module = lua_touserdata(L, 1);
+	assert(L, module != NULL, "Module can't be null");
+	Player_Free(module);
+	return 0;
+}
+
+static int mod_play(lua_State *L){	
+	MODULE * module = lua_touserdata(L, 1);
+	assert(L, module != NULL, "Module can't be null");
+	Player_Start(module);
+	return 0;
+}
+
+static int mod_stop(lua_State *L){	
+	Player_Stop();
+	return 0;
+}
+
+static int mod_pauseResume(lua_State *L){	
+	Player_TogglePause();
+	return 0;
+}
+
+static int mod_isActive(lua_State *L){	
+	int i = Player_Active();
+	lua_pushnumber(L, i);
+	return 1;
+}
+
+static int mod_isPaused(lua_State *L){	
+	int i = Player_Paused();
+	lua_pushnumber(L, i);
+	return 1;
+}
+
+static int mod_nextPosition(lua_State *L){	
+	Player_NextPosition();
+	return 0;
+}
+
+static int mod_previousPosition(lua_State *L){	
+	Player_PrevPosition();
+	return 0;
+}
+
+static int mod_setPosition(lua_State *L){	
+	int pos = (int)luaL_checknumber(L, 1);
+	assert(L, pos >= 0, "Position must be >= 0");
+	Player_SetPosition(pos);
+	return 0;
+}
+
+static int mod_setVolume(lua_State *L){	
+	int vol = (int)luaL_checknumber(L, 1);
+	assert(L, vol >= 0 && vol <= 128, "Volume must be between 0 and 128");
+	Player_SetVolume(vol);
+	return 0;
+}
+
+static int mod_getModule(lua_State *L){	
+	MODULE * module = Player_GetModule();
+	lua_pushlightuserdata(L, module);
+	return 1;
+}
+
+static int mod_setSpeed(lua_State *L){	
+	int speed = (int)luaL_checknumber(L, 1);
+	assert(L, speed >=1 && speed <= 32, "Speed must be between 1 and 32");
+	Player_SetSpeed(speed);
+	return 0;
+}
+
+static int mod_setTempo(lua_State *L){	
+	int tempo = (int)luaL_checknumber(L, 1);
+	assert(L, tempo >=32 && tempo <= 255, "Tempo must be between 32 and 255");
+	Player_SetTempo(tempo);
+	return 0;
+}
+
+static int mod_time(lua_State *L){	
+	MODULE * module = lua_touserdata(L, 1);
+	assert(L, module != NULL, "Module can't be null");
+	lua_pushnumber(L, module->sngtime);
+	return 1;
+}
+
+static int mod_initTempo(lua_State *L){	
+	MODULE * module = lua_touserdata(L, 1);
+	assert(L, module != NULL, "Module can't be null");
+	lua_pushnumber(L, module->inittempo);
+	return 1;
+}
+
+static int mod_initSpeed(lua_State *L){	
+	MODULE * module = lua_touserdata(L, 1);
+	assert(L, module != NULL, "Module can't be null");
+	lua_pushnumber(L, module->initspeed);
+	return 1;
+}
+
+static int mod_initVolume(lua_State *L){	
+	MODULE * module = lua_touserdata(L, 1);
+	assert(L, module != NULL, "Module can't be null");
+	lua_pushnumber(L, module->initvolume);
+	return 1;
+}
+
+static const luaL_Reg modlib[] = {
+	{"init", mod_init},
+	{"load", mod_load},
+	{"destroy", mod_destroy},
+	{"play", mod_play},
+	{"stop", mod_stop},
+	{"pauseResume", mod_pauseResume},
+	{"isActive", mod_isActive},
+	{"isPaused", mod_isPaused},
+	{"nextPosition", mod_nextPosition},
+	{"previousPosition", mod_previousPosition},
+	{"setPosition", mod_setPosition},
+	{"setVolume", mod_setVolume},
+	{"getModule", mod_getModule},
+	{"setSpeed", mod_setSpeed},
+	{"setTempo", mod_setTempo},
+	{"time", mod_time},
+	{"initTempo", mod_initTempo},
+	{"initSpeed", mod_initSpeed},
+	{"initVolume", mod_initVolume},
+	{NULL, NULL}
+};
+
+/*
+** Open infos library
+*/
+LUALIB_API int luaopen_mod (lua_State *L) {
+  luaL_register(L, LUA_MODLIBNAME, modlib);
+  return 1;
+}
+
+
+
+
+
