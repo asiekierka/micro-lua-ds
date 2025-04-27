@@ -12,6 +12,7 @@
 ### Bug fixes
 
 * As BlocksDS worked around the 3DS RTC emulation issue upstream, `os.time3DS` and `os.date3DS` are no longer necessary. They have been preserved as aliases to `os.time` and `os.date` for compatibility purposes.
+* The sound bank example has been updated to latest Maxmod.
 * Updated Lua to 5.2.4 plus additional fixes:
   * [5.2.3] Stack overflow in vararg functions with many fixed parameters called with few arguments. 
   * [5.2.3] Garbage collector can trigger too many times in recursive loops. 
