@@ -12,6 +12,7 @@ ARM_NONE_EABI_PATH	?= $(WONDERFUL_TOOLCHAIN)/toolchain/gcc-arm-none-eabi/bin/
 # ===========
 
 DEBUG		?= false
+LTO		?= true
 NITROFS		?= true
 
 NAME		:= MicroLua
@@ -67,6 +68,7 @@ LIBDIRS		:= $(BLOCKSDSEXT)/ulibrary \
 # ---------------
 
 BUILDDIR	:= build/$(NAME)
+LTODIR		:= $(BUILDDIR)/lto
 ELF		:= build/$(NAME).elf
 DUMP		:= build/$(NAME).dump
 MAP		:= build/$(NAME).map
@@ -172,6 +174,13 @@ CXXFLAGS	+= -std=gnu++17 $(WARNFLAGS) $(INCLUDEFLAGS) $(DEFINES) \
 LDFLAGS		:= $(ARCH) $(LIBDIRSFLAGS) -Wl,-Map,$(MAP) $(DEFINES) \
 		   -Wl,--start-group $(LIBS) -Wl,--end-group -specs=$(SPECS)
 
+ifeq ($(LTO),true)
+CFLAGS		+= -flto
+CXXFLAGS	+= -flto
+LDFLAGS		+= -flto -flto-incremental=$(LTODIR)
+endif
+
+
 # Intermediate build files
 # ------------------------
 
@@ -231,6 +240,7 @@ $(ROM): $(ELF)
 
 $(ELF): $(OBJS)
 	@echo "  LD      $@"
+	@$(MKDIR) -p $(LTODIR)
 	$(V)$(LD) -o $@ $(OBJS) $(LDFLAGS)
 
 $(DUMP): $(ELF)
