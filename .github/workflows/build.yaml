@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [ new ]
+    branches: [ main ]
   pull_request:
   workflow_dispatch:
 
@@ -19,7 +19,7 @@ jobs:
 
       - name: Install prerequisites
         run: |
-          wf-pacman -S blocksds-ulibrary toolchain-gcc-arm-none-eabi-zlib toolchain-gcc-arm-none-eabi-libpng
+          wf-pacman -S --noconfirm blocksds-ulibrary toolchain-gcc-arm-none-eabi-zlib toolchain-gcc-arm-none-eabi-libpng16
 
       - name: Build
         run: make
@@ -34,4 +34,4 @@ jobs:
             README.md
             doc/
             licenses/
-            Fat/lua/
+            Fat/*/

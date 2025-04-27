@@ -88,8 +88,8 @@ A safe alternative may be to use **NitroFS** that MicroLua provides, which allow
 
 To compile MicroLua, install BlocksDS with the following dependencies:
 
-    $ wf-pacman -S blocksds-ulibrary toolchain-gcc-arm-none-eabi-zlib toolchain-gcc-arm-none-eabi-libpng
-    
+    $ wf-pacman -S blocksds-ulibrary toolchain-gcc-arm-none-eabi-zlib toolchain-gcc-arm-none-eabi-libpng16
+
 Next, simply run Make:
 
     $ make
