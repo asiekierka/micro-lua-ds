@@ -49,6 +49,9 @@ void print_error(const char *text)
 
 int main()
 {
+    // Initialize extended exception handler
+    defaultExceptionHandler();
+
     // Initialization of µlibrary
     ulInit(UL_INIT_ALL);
     ulInitGfx();

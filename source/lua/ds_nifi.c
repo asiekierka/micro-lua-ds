@@ -46,16 +46,24 @@ void Handler(int packetID, int readLength){
 	}
 }
 
+static int nifi_stop(lua_State *L){
+	if(Wifi_init) {
+		Wifi_DisableWifi();
+		Wifi_init = 0;
+	}
+	return 0;
+}
+
 static int nifi_init(lua_State *L){
 	bool res = false;
 	newMess = false;
 	taille = 0;
-	//if(Wifi_init == 0) 
-	res = Wifi_InitDefault(INIT_ONLY);
+	nifi_stop(L);
+	if(!Wifi_init) res = Wifi_InitDefault(INIT_ONLY);
 	char canal = luaL_checknumber(L,1);
 	if(canal<1 && canal >13) canal = 10;
 	if(res){
-		//Wifi_init = 1;
+		Wifi_init = 1;
 		Wifi_SetPromiscuousMode(true);
 		Wifi_EnableWifi();
 		Wifi_RawSetPacketHandler(Handler);
@@ -87,11 +95,6 @@ static int nifi_changeChannel(lua_State *L){
 	char canal=luaL_checknumber(L, 1);
 	assert(L, canal>0 && canal<14, "Channel must be between 1 and 13");
 	Wifi_SetChannel(canal);
-	return 0;
-}
-
-static int nifi_stop(lua_State *L){
-	Wifi_DisableWifi();
 	return 0;
 }
 

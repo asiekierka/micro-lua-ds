@@ -26,9 +26,18 @@
 //Init Wifi_init var
 u8 Wifi_init = 0;
 
+static int wifi_stop(lua_State *L){
+	if (Wifi_init) {
+		Wifi_DisableWifi();
+		Wifi_init = 0;
+	}
+	return 0;
+}
+
 static int wifi_connectWFC(lua_State *L){
 	bool res = false;
-	if(Wifi_init == 0) res = Wifi_InitDefault(WFC_CONNECT);
+	wifi_stop(L);
+	if(!Wifi_init) res = Wifi_InitDefault(WFC_CONNECT);
 	if(res) Wifi_init = 1;
 	lua_pushboolean(L, res);
 	return 1;
@@ -36,7 +45,8 @@ static int wifi_connectWFC(lua_State *L){
 
 static int wifi_initDefault(lua_State *L){
 	bool res = false;
-	if(Wifi_init == 0) res = Wifi_InitDefault(INIT_ONLY);
+	wifi_stop(L);
+	if(!Wifi_init) res = Wifi_InitDefault(INIT_ONLY);
 	if(res) Wifi_init = 1;
 	lua_pushboolean(L,res);
 	return 1;
@@ -220,11 +230,6 @@ static int wifi_status(lua_State *L){
 	int status = Wifi_AssocStatus();
 	lua_pushstring(L, ASSOCSTATUS_STRINGS[status]);
 	return 1;
-}
-
-static int wifi_stop(lua_State *L){
-	Wifi_DisableWifi();
-	return 0;
 }
 
 static int wifi_disconnect(lua_State *L){

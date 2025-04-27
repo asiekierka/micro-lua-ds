@@ -46,6 +46,8 @@ extern int spaceBetweenScreens;
 
 extern int alphaGroup;
 
+extern u8 Wifi_init;
+
 typedef struct mapObj{
     UL_IMAGE * image;
     unsigned short * table;
