@@ -43,7 +43,7 @@ Here are the main features of MicroLua:
 * _Nifi_: MicroLua allows you to make your console communicate with other ones Ad-hoc
 * _Sound system_: based on the Mixmod library, uLua can play MOD and WAV sounds based on a soundbank system
 * _Fat access_: full access to the content of your card; uLua also implements a built-in library to manage INI config files
-* _Embedded File System (EFS)_: you can make a special MicroLua version to embed your scripts inside the Lua interpreter
+* _NitroFS support_: you can make a special MicroLua version to embed your scripts inside the Lua interpreter
 * _Rumble and motion_: if you have the required hardware, you can use uLua to make your NDS shake and detect its movements
 
 
@@ -82,7 +82,7 @@ I hope you will make great projects, so you will distribute a folder containing 
 
 Last but no least: please, **do NOT compile your scripts**. It is often useless (as a speed gain), and open source projects are far better (imagine that one day you loose your files). I know there are some bad people outside, who may stole your work, but as long as you publish your projects on the uLua forum, there will be no leeching.
 
-A safe alternative may be to use the **Embedded File System (EFS)** that provides MicroLua through the EFSLib, which allows you to produce a NDS binary including all your files. I encourage you to read this page then: <https://sourceforge.net/p/microlua/wiki/EFS/>.
+A safe alternative may be to use **NitroFS** that MicroLua provides, which allows you to produce a NDS binary including all your files.
 
 ## MicroLua hacker guide
 
