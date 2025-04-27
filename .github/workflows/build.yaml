@@ -1,0 +1,37 @@
+name: Build
+
+on:
+  push:
+    branches: [ new ]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    container: skylyrac/blocksds:slim-latest
+    steps:
+      - name: Clone project
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install prerequisites
+        run: |
+          wf-pacman -S blocksds-ulibrary toolchain-gcc-arm-none-eabi-zlib toolchain-gcc-arm-none-eabi-libpng
+
+      - name: Build
+        run: make
+
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: Micro Lua DS
+          path: |
+            MicroLua*.nds
+            CHANGELOG.md
+            README.md
+            doc/
+            licenses/
+            Fat/lua/

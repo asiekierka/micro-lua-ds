@@ -16,7 +16,7 @@ LTO		?= true
 NITROFS		?= true
 
 NAME		:= MicroLua
-VERSION		:= 4.7.3-dev
+VERSION		:= 4.7.3
 
 GAME_TITLE	:= Micro Lua DS $(VERSION)
 GAME_SUBTITLE	:= Unofficial update
