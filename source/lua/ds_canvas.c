@@ -264,7 +264,6 @@ static int canvas_add(lua_State *L){
 }
 
 static int canvas_setAttr(lua_State *L){
-	char * text = NULL;
     CanvasObject * co = lua_touserdata(L, 1);
     switch((int)luaL_checknumber(L, 2)){
         case ATTR_X1:
@@ -301,9 +300,8 @@ static int canvas_setAttr(lua_State *L){
             co->color4 = (int)luaL_checknumber(L, 3);
             break;
         case ATTR_TEXT:
-            strcpy(text,(char *)luaL_checkstring(L, 3));
             free(co->text);
-            co->text = strdup(text);
+            co->text = strdup((char *)luaL_checkstring(L, 3));
             break;
         case ATTR_VISIBLE:
             co->visible = (bool)lua_toboolean(L, 3);

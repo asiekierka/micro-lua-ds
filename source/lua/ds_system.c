@@ -97,13 +97,13 @@ int mustSwap(lua_State *L, int dirList, int i) {
     lua_getfield(L, -1, "isDir");
     isDir1 = lua_toboolean(L, -1);
     lua_getfield(L, -2, "name");
-    strncpy(name1, lua_tostring(L, -1), sizeof(name1));
+    strncpy(name1, lua_tostring(L, -1), sizeof(name1) - 1);
     lua_pop(L, 3);                      // Removes elem[i], its 'isDir' and its 'name'
     lua_geti(L, dirList, i+1);
     lua_getfield(L, -1, "isDir");
     isDir2 = lua_toboolean(L, -1);
     lua_getfield(L, -2, "name");
-    strncpy(name2, lua_tostring(L, -1), sizeof(name2));
+    strncpy(name2, lua_tostring(L, -1), sizeof(name2) - 1);
     lua_pop(L, 3);                      // Idem
 
     name1[sizeof(name1) - 1] = 0;

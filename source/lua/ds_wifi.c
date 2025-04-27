@@ -148,14 +148,14 @@ static int wifi_connectAP(lua_State *L){
 	u8 i, j;
 	u8 numAP = 0;
 	u8 numkey = 0;
-	unsigned char *key = NULL;
+	const unsigned char *key = NULL;
 	char rep;
 	u8 ltype = lua_type(L, 1);
 	if(ltype == LUA_TNUMBER)
 	{
 		numAP = (u8)luaL_checknumber(L,1) -1;
 		numkey = (u8)luaL_checknumber(L,2);
-		strcpy((char *)key,(char *)luaL_checkstring(L,3));
+		key = (const unsigned char *)luaL_checkstring(L,3);
 		Wifi_GetAPData(numAP, &ap);
 	}
 	else
@@ -177,7 +177,7 @@ static int wifi_connectAP(lua_State *L){
 		apdata.bssid[i/2] = 0;
 		apdata.channel = (u8)luaL_checknumber(L,3);
 		numkey = (u8)luaL_checknumber(L,4);
-		strcpy((char *)key,(char *)luaL_checkstring(L,5));
+		key = (const unsigned char *)luaL_checkstring(L,5);
 		//i=Wifi_FindMatchingAP(1,&apdata,&ap);
 	}
 	numkey = numkey-1;
@@ -285,17 +285,17 @@ static int wifi_autoConnectWFC(lua_State *L){
 }
 
 static int wifi_setLocalIP(lua_State *L){
-	char * ip = (char *)luaL_checkstring(L,1);
-	char * gateway = (char *)luaL_checkstring(L,2);
-	char * subnetmask = (char *)luaL_checkstring(L,3);
-	char * dns1 = (char *)luaL_checkstring(L,4);
-	char * dns2 = (char *)luaL_checkstring(L,5);
+	const char * ip = (const char *)luaL_checkstring(L,1);
+	const char * gateway = (const char *)luaL_checkstring(L,2);
+	const char * subnetmask = (const char *)luaL_checkstring(L,3);
+	const char * dns1 = (const char *)luaL_checkstring(L,4);
+	const char * dns2 = (const char *)luaL_checkstring(L,5);
 	struct in_addr iph, gate, mask, DNS1, DNS2;
 	assert(L, ip != NULL, "IP can't be null.");
-	assert(L, gateway != NULL, "Gateway can't be null"); 
-	if(subnetmask == NULL) strcpy(subnetmask,"255.255.255.0");
-	if(dns1 == NULL) strcpy(dns1,"0.0.0.0");
-	if(dns2 == NULL) strcpy(dns2,"0.0.0.0");
+	assert(L, gateway != NULL, "Gateway can't be null");
+	if(subnetmask == NULL) subnetmask = "255.255.255.0";
+	if(dns1 == NULL) dns1 = "0.0.0.0";
+	if(dns2 == NULL) dns2 = "0.0.0.0";
 	inet_aton(ip, &iph);
 	inet_aton(gateway, &gate);
 	inet_aton(subnetmask, &mask);
