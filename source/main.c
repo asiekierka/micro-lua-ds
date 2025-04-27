@@ -73,8 +73,8 @@ int main()
     *   According to the macro EFS defined upon compilation,
     *   MicroLua will init FAT alone, or EFS and FAT */
     bool fatInitOk = fatInitDefault();
-    bool nitrofsInitOk = nitroFSInit(NULL);
-    if (!fatInitOk && !nitrofsInitOk) {
+    nitroFsAvailable = nitroFSInit(NULL);
+    if (!fatInitOk && !nitroFsAvailable) {
         print_error("Failed to initialize FAT library");
         return 1;
     }

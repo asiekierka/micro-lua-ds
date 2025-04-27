@@ -72,7 +72,7 @@ shell.show = function()
 	screen.drawGradientRect(SCREEN_UP,0,90,256,192,Color.new(31,31,31),Color.new(31,31,31),Explore.ci,Explore.ci)
 	screen.blit(SCREEN_UP,0,0,shell.logo)
 	screen.print(SCREEN_UP,172,76,string.char(169).." RISIKE 2009",shell.co)
-	screen.print(SCREEN_UP,82,96,"Microlua community 2009-2013",shell.co)
+	screen.print(SCREEN_UP,82,96,"Microlua community 2009-2025",shell.co)
 	buff = "Based on ".._VERSION
 	screen.print(SCREEN_UP,250-(string.len(buff)*6),106,buff,shell.co)
 	buff = ULUA_VERSION

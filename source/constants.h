@@ -26,10 +26,12 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
+extern bool nitroFsAvailable;
+
 // The same value as in ds_timer.c
 #define TIMER_ID 0
 
-#define ULUA_VERSION "4.7.2"
+#define ULUA_VERSION "4.7.3"
 
 #define ULUA_DIR "/lua/"
 #define ULUA_SCRIPTS ULUA_DIR "/scripts/"
@@ -70,12 +72,6 @@
 
 #define PLAY_LOOP 0
 #define PLAY_ONCE 1
-
-#ifdef EFS
-#define EFS 1
-#else
-#define EFS 0
-#endif
 
 void uLua_pushConstants(lua_State *L);
 

@@ -20,6 +20,8 @@
 #include "lua/ds_lib.h"
 #include "constants.h"
 
+bool nitroFsAvailable;
+
 void uLua_pushConstants(lua_State *L) {
     lua_pushliteral(L, ULUA_VERSION);
     lua_setglobal(L, "ULUA_VERSION");
@@ -210,6 +212,6 @@ void uLua_pushConstants(lua_State *L) {
 	
     // Availability of EFS
     lua_getglobal(L, LUA_SYSTEMLIBNAME);
-    lua_pushboolean(L, EFS);
+    lua_pushboolean(L, nitroFsAvailable);
     lua_setfield(L, -2, "EFS");
 }
