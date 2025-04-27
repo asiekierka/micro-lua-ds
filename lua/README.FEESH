@@ -1,6 +1,0 @@
-Some of the Libs for lua aren't implemented, mainly time, and the ability
-to run programs (system()).
-
-Most scripts shouldn't find this to be a problem though, time might be reimplemented
-to use ticks, but it's unlikely I'll be doing that until I need a reason.
-

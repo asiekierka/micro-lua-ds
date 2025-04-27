@@ -1,7 +1,8 @@
-#ifndef ds_vars_h
-#define ds_vars_h
+#ifndef LUA_DS_VARS_H_
+#define LUA_DS_VARS_H_
 
 #include <ulib/ulib.h>
+#include "ds_lib.h"
 
 #ifdef assert
 #undef assert

@@ -33,6 +33,7 @@
 #include <netinet/in.h>
 
 #include "constants.h"
+#include "lua/ds_lib.h"
 
 
 void print_error(const char *text)
@@ -84,6 +85,7 @@ int main()
     }
     
     luaL_openlibs(l);
+    luaL_openDSlibs(l);
     uLua_pushConstants(l);
     
     // First we try to load from fat:

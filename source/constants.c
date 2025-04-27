@@ -17,6 +17,7 @@
     along with MicroLua.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "lua/ds_lib.h"
 #include "constants.h"
 
 void uLua_pushConstants(lua_State *L) {

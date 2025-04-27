@@ -34,8 +34,9 @@ SDIMAGE		:= image.bin
 # Source code paths
 # -----------------
 
+LUADIR		:= lua
 SOURCEDIRS	:= source
-INCLUDEDIRS	:= lua/src
+INCLUDEDIRS	:= $(LUADIR)
 GFXDIRS		:= graphics
 BINDIRS		:= data
 AUDIODIRS	:= audio
@@ -132,8 +133,8 @@ LIB_O=	lauxlib.o lbaselib.o lbitlib.o lcorolib.o ldblib.o liolib.o \
 	lmathlib.o loslib.o lstrlib.o ltablib.o loadlib.o linit.o
 
 OBJS_LUA	:= \
-		$(patsubst %.o,%.c.o,$(addprefix $(BUILDDIR)/lua/src/,$(LIB_O))) \
-		$(patsubst %.o,%.c.o,$(addprefix $(BUILDDIR)/lua/src/,$(CORE_O)))
+		$(patsubst %.o,%.c.o,$(addprefix $(BUILDDIR)/$(LUADIR)/,$(LIB_O))) \
+		$(patsubst %.o,%.c.o,$(addprefix $(BUILDDIR)/$(LUADIR)/,$(CORE_O)))
 
 # Compiler and linker flags
 # -------------------------

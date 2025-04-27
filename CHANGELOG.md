@@ -10,6 +10,19 @@
 ### Bug fixes
 
 * As BlocksDS worked around the 3DS RTC emulation issue upstream, `os.time3DS` and `os.date3DS` are no longer necessary. They have been preserved as aliases to `os.time` and `os.date` for compatibility purposes.
+* Updated Lua to 5.2.4 plus additional fixes:
+  * [5.2.3] Stack overflow in vararg functions with many fixed parameters called with few arguments. 
+  * [5.2.3] Garbage collector can trigger too many times in recursive loops. 
+  * [5.2.3] Wrong error message in some short-cut expressions. 
+  * [5.2.3] GC can collect a long string still in use during parser. 
+  * [5.2.3] Call to macro `luai_userstateclose` should be done only after the calls to __gc methods. 
+  * [5.2.3] Resuming the running coroutine makes it unyieldable. 
+  * [5.2.4] Compiler can optimize away overflow check in `table.unpack`.
+  * [5.2.4] Ephemeron table can wrongly collect entry with strong key. 
+  * Wrong code generated for a `goto` followed by a label inside an `if`.
+  * Dead keys with nil values can stay in weak tables.
+  * Expression list with four or more expressions in a `for` loop can crash the interpreter.
+  * Label between local definitions can mix-up their initializations.
 
 ## MicroLua 4.7.2
 
@@ -56,7 +69,7 @@ It looks like I will make some comments for every new version from now on ahah! 
  * the part for the EFS has been improved
  * there are a few more targets: all, cleanall, export
 * With the migration to SourceForge, the whole repository structure has changed (and the 'docs' folder has been removed)
-* Out Lua sources have been updated to Lua 5.2.2; its folder is now simply called 'lua' to ease future updates
+* Our Lua sources have been updated to Lua 5.2.2; its folder is now simply called 'lua' to ease future updates
 * The warnings from our code have been fixed (the ones from the EFSlib are too weird)
 
 ### Comments
