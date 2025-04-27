@@ -13,8 +13,6 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#include <ulib/ulib.h>
-
 #include "vars.h"
 
 static int color_new(lua_State *L){

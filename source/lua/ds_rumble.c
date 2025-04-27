@@ -13,7 +13,6 @@
 #include "lualib.h"
 
 #include <nds.h>
-#include <ulib/ulib.h>
 
 #include "vars.h"
 

@@ -1,7 +1,7 @@
 #ifndef LUA_DS_VARS_H_
 #define LUA_DS_VARS_H_
 
-#include <ulib/ulib.h>
+#include <nds.h>
 #include "ds_lib.h"
 
 #ifdef assert
@@ -49,7 +49,7 @@ extern int alphaGroup;
 extern u8 Wifi_init;
 
 typedef struct mapObj{
-    UL_IMAGE * image;
+    void * image; // UL_IMAGE *
     unsigned short * table;
     int width, height;
     int tileWidth, tileHeight;

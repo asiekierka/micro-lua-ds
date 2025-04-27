@@ -5,8 +5,6 @@
 #include "lauxlib.h"
 #include "lualib.h"
   
-#include <ulib/ulib.h>
-
 #include "vars.h"
    
 static int user_theme(lua_State* l) {

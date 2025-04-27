@@ -14,7 +14,6 @@
 #include "lualib.h"
 
 #include <nds.h>
-#include <ulib/ulib.h>
 
 #include <dswifi9.h>
 #include <sys/socket.h>

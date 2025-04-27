@@ -13,8 +13,6 @@
 #include "lualib.h"
 
 #include <nds.h>
-#include <ulib/ulib.h>
-#include <nds/arm9/ndsmotion.h>
 
 #include "vars.h"
 

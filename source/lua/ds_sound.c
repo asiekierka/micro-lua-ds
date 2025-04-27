@@ -12,7 +12,6 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-#include <ulib/ulib.h>
 #include <maxmod9.h>
 #include <sys/stat.h>
 #include <sys/dir.h>

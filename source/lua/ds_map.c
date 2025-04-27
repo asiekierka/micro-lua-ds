@@ -128,8 +128,8 @@ static int map_draw(lua_State *L){
     for(i=map->scrollY;i<map->scrollY+height;i++){ // Y
         for(j=map->scrollX;j<map->scrollX+width;j++){ // X
             tile = map->table[i*map->height+j];
-            yy = floor(tile / (map->image->sizeX / map->tileWidth));
-            xx = tile - (yy * (map->image->sizeX / map->tileWidth));
+            yy = floor(tile / (((UL_IMAGE*) map->image)->sizeX / map->tileWidth));
+            xx = tile - (yy * (((UL_IMAGE*) map->image)->sizeX / map->tileWidth));
             spaceX = 0;
             spaceY = 0;
             if(j != map->scrollX) spaceX = map->spaceX;
